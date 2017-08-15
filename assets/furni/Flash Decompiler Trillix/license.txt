@@ -1,0 +1,40 @@
+Demo Version End-User License Agreement
+
+IMPORTANT-READ CAREFULLY: This End-User License Agreement ("EULA") is a legal agreement between you (either an individual or a single entity) and The Eltima Software for Flash Decompiler Trillix (either a fully functional time-limited version or a feature-limited version) later referred to as 'SOFTWARE'. 
+By installing, copying, or otherwise using the SOFTWARE you agree to be bound by the terms of this EULA. If you do not agree to the terms of this EULA, do not install or use the SOFTWARE.
+
+
+1. SOFTWARE LICENSE. The SOFTWARE is licensed, not sold. Copyright laws and international copyright treaties, as well as other intellectual property laws and treaties protect the SOFTWARE.
+
+2. GRANT OF LICENSE. REDISTRIBUTION OF Trial VERSION. 
+If you are using Trial VERSION you may: 
+make copies of the Trial VERSION as you wish; 
+give exact copies of the original Trial VERSION to anyone; 
+distribute Trial VERSION in its unmodified form via electronic means (Internet, BBS's, Shareware distribution libraries, CD-ROMs, etc.);
+If you represent a magazine or news or reviews resource, you are free to place a copy of the Trial VERSION online or on a covermount CD without our permission.
+
+
+3. RESTRICTIONS. You may not: 
+reverse engineer, decompile, or disassemble the SOFTWARE; 
+rent, lease, or lend the SOFTWARE; 
+charge any fee for the copy or use of the Trial VERSION.
+
+Your distribution of the Trial VERSION will not entitle you to any compensation from Eltima Software. 
+You must distribute a copy of this EULA with any copy of the SOFTWARE and anyone to whom you distribute the SOFTWARE is subject to this EULA.
+You may permanently transfer all of your rights under this EULA, provided the recipient agrees to the terms of this EULA.
+
+4. TERMINATION. Without prejudice to any other rights, Eltima Software may terminate this EULA if you fail to comply with the terms and conditions of this EULA. In such event, you must destroy all copies of the SOFTWARE.
+
+5. COPYRIGHT. The SOFTWARE is protected by copyright law and international treaty provisions. You acknowledge that no title to the intellectual property in the SOFTWARE is transferred to you. You further acknowledge that title and full ownership rights to the SOFTWARE will remain the exclusive property of Eltima Software and you will not acquire any rights to the SOFTWARE except as expressly set forth in this license. You agree that any copies of the SOFTWARE will contain the same proprietary notices which appear on and in the SOFTWARE.
+
+6. SPECIAL CONDITIONS.
+
+
+7. DISCLAIMER OF WARRANTY. Eltima Software expressly disclaims any warranty for the SOFTWARE. THE SOFTWARE AND ANY RELATED DOCUMENTATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OR MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR ONINFRINGEMENT. THE ENTIRE RISK ARISING OUT OF USE OR PERFORMANCE OF THE SOFTWARE REMAINS WITH YOU.
+
+8. LIMITATION OF LIABILITY. IN NO EVENT SHALL ELTIMA SOFTWARE OR ITS SUPPLIERS BE LIABLE TO YOU FOR ANY CONSEQUENTIAL, SPECIAL, INCIDENTAL, OR INDIRECT DAMAGES OF ANY KIND ARISING OUT OF THE DELIVERY, PERFORMANCE, OR USE OF THE SOFTWARE, EVEN IF ELTIMA SOFTWARE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN ANY EVENT, ELTIMA SOFTWARE'S ENTIRE LIABILITY UNDER ANY PROVOSION OF THIS EULA SHALL BE LIMITED EXCLUSIVELY TO PRODUCT REPLACEMENT.
+
+Eltima Software reserves all rights not expressly granted here.
+
+
+(c) 2000-2010 Eltima Software. All rights reserved. 

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="../EasyJS/js/easy.js"></script>
+    <meta name="viewport" content="width=375, initial-scale=1.2, maximum-scale=1.2, user-scalable=no">
+    <script src="js/habbo.js"></script>
+
+
+    <script>
+        let user_data = {
+            id: 1,
+            user: "PurpleG"
+        };
+    </script>
+
+</head>
+<body>
+
+
+<script>
+
+
+    const furni = [
+        {
+            label_id: "throne",
+            parts: ["shadow", "icon", "e1", "e2", "s1", "s2"],
+            states: {
+                icon: "icon",
+                rotations: {
+                    north:[
+                        ["shadow-xy",0,32],
+                        ["e2-x",7,-20],
+                        ["e1-x",0,-48]
+                    ],
+                    east:[
+                        ["shadow-y",0,0],
+                        ["e2",33,-20],
+                        ["e1",0,-48]
+                    ],
+                    south:[
+                        ["shadow",0,0],
+                        ["s1",0,-60],
+                        ["s2",7,-11]
+                    ],
+                    west:[
+                        ["shadow-x",0,0],
+                        ["s1-x",0,-60,1],
+                        ["s2-x",26,-11]
+                    ],
+                }
+            },
+            stackHeight: 10,
+        },
+        {
+            label_id: "tile_marble",
+            parts: ["icon","n","e","s","w"],
+            states: {
+                icon: "icon",
+                rotations: {
+                    north: [["n", 0, -1]],
+                    east:  [["e", 0, -1]],
+                    south: [["s", 0, -1]],
+                    west:  [["w", 0, -1]]
+                }
+            },
+            stackHeight: 4,
+        },
+        {
+            label_id: "50_goldbar",
+            parts: ["icon","n"],
+            states: {
+                icon: "icon",
+                rotations: {
+                    north: [["n", 1, -8]],
+                    east:  [["n-x", 1, -8]],
+                    south: [["n", 1, -8]],
+                    west:  [["n-x", 1, -8]]
+                }
+            },
+            stackHeight: 14,
+        }
+    ];
+
+
+
+
+    const ud = new Habbo(user_data);
+
+
+    Habbo.API.fn.loadFurni(furni);
+
+    Habbo.API.fn.enterRoom();
+    let gb = Habbo.API.fn.furniAsset("50_goldbar");
+    for(let j = 0; j < 10; j++) {
+        for(let i = 0; i < Habbo.API.currentRoom.tiles.length; i++){
+            let t = Habbo.API.currentRoom.tiles[i];
+            Habbo.API.fn.placeFurni(gb, t.truex, t.truey);
+        }
+        gb.rotate();
+    }
+
+</script>
+</body>
+</html>
