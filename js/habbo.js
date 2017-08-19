@@ -571,7 +571,6 @@ Habbo.prototype._API.prototype.RoomWall = class extends Shape{
         this.color = new Color(152, 152, 101);
         this.stroke = new Color(142, 142, 94);
         this.mouse = new Vector();
-git
 
         this.points = [];
 
