@@ -5,7 +5,7 @@
     <title>Title</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="../EasyJS/js/easy.js"></script>
-    <meta name="viewport" content="width=375, initial-scale=1.2, maximum-scale=1.2, user-scalable=no">
+    <meta name="viewport" content="width=500, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="js/habbo.js"></script>
 
 
@@ -53,6 +53,7 @@
                 }
             },
             stackHeight: 10,
+            roomPos: "floor"
         },
         {
             label_id: "tile_marble",
@@ -67,6 +68,7 @@
                 }
             },
             stackHeight: 4,
+            roomPos: "floor"
         },
         {
             label_id: "50_goldbar",
@@ -81,6 +83,7 @@
                 }
             },
             stackHeight: 14,
+            roomPos: "floor"
         }
     ];
 
@@ -93,14 +96,7 @@
     Habbo.API.fn.loadFurni(furni);
 
     Habbo.API.fn.enterRoom();
-    let gb = Habbo.API.fn.furniAsset("50_goldbar");
-    for(let j = 0; j < 10; j++) {
-        for(let i = 0; i < Habbo.API.currentRoom.tiles.length; i++){
-            let t = Habbo.API.currentRoom.tiles[i];
-            Habbo.API.fn.placeFurni(gb, t.truex, t.truey);
-        }
-        gb.rotate();
-    }
+    let gb = Habbo.API.fn.furniAsset("throne");
 
 </script>
 </body>

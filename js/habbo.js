@@ -59,12 +59,12 @@ Habbo.prototype._API = function(){
         DragSpeed: 0.02,
 
 
-        FurniLimit: 10000000
+        FurniLimit: 100000
     };
 
 
     if(this.Settings.isMobile){
-        this.Settings.DragSpeed = 0.04;
+        this.Settings.DragSpeed = 0.005;
     }
 
 
@@ -198,11 +198,10 @@ Habbo.prototype._API.prototype.fn = {
 
     clickAction: function(x, y){
         if(Habbo.API.Client.hover.tile){
-                let tile = Habbo.API.Client.hover.tile;
-                for(let i = 0; i < tile.val.furnis.length; i++){
-                    let f = tile.val.furnis[i];
-                    f.rotate();
-                }
+                let tx = Habbo.API.Client.hover.tile.truex;
+                let ty = Habbo.API.Client.hover.tile.truey;
+
+                Habbo.API.fn.placeFurni(gb, tx,ty);
         }
         if(Habbo.API.Client.hover.furni){
             let furni = Habbo.API.Client.hover.furni;
@@ -234,14 +233,15 @@ Habbo.prototype._API.prototype.fn = {
     },
 
     placeFurni(furni, x, y){
-        //const a = Habbo.API.currentRoom.furniCount < Habbo.API.Settings.FurniLimit;
-        const a = true;
+        const a = Habbo.API.currentRoom.furnis.length < Habbo.API.Settings.FurniLimit;
         if(a){
             x = x || 0;
             y = y || 0;
             let f = furni.clone();
+            let t = Habbo.API.currentRoom.tile(x, y);
             f.pos = new Vector(x, y);
-            Habbo.API.currentRoom.tile(x, y).val.furnis.push(f);
+
+            Habbo.API.currentRoom.furnis.push(f);
             return f;
         } else{
             return false;
@@ -336,6 +336,7 @@ Habbo.prototype._API.prototype.Furni = class extends Shape{
         this.allow_gift = true;
         this.allow_trade = true;
 
+        this.offset = new Vector();
         this.mouse = new Vector();
 
     }
@@ -417,11 +418,17 @@ Habbo.prototype._API.prototype.Furni = class extends Shape{
 
 
     translateRotation(ctx, asset, x, y, a, b){
-        ctx.translate(x,y);
-        ctx.scale(a, b);
-        Habbo.Canvas.add(asset, 0, 0);
-        this.hasMouse = ctx.isPointInPath(this.mouse.x, this.mouse.y);
-        ctx.setTransform(1,0,0,1,0,0);
+        const rx = x + this.offset.x;
+        const ry = y + this.offset.y;
+        if(ctx){
+            ctx.translate(rx,ry);
+            ctx.scale(a, b);
+            Habbo.Canvas.add(asset, 0, 0);
+            this.hasMouse = ctx.isPointInPath(this.mouse.x, this.mouse.y);
+            ctx.setTransform(1,0,0,1,0,0);
+        } else{
+            Habbo.Canvas.add(asset, rx, ry);
+        }
     }
 
     renderRotation(ctx){
@@ -443,7 +450,7 @@ Habbo.prototype._API.prototype.Furni = class extends Shape{
 
 
             if(s===undefined){
-                Habbo.Canvas.add(a, (this.x)+p[1], (this.y)+p[2]);
+                this.translateRotation(false, a, (this.x)+p[1], (this.y)+p[2])
             } else if(s==="x"){
                 this.translateRotation(ctx, a, (this.x+a.width)+p[1], (this.y)+p[2], -1, 1);
             } else if(s==="y"){
@@ -491,7 +498,6 @@ Habbo.prototype._API.prototype.RoomTile = class extends Shape{
     constructor() {
         super();
         this.void = false;
-        this.furnis = [];
         this.width = 64;
         this.height = 32;
         this.color = new Color(152, 152, 101);
@@ -506,6 +512,75 @@ Habbo.prototype._API.prototype.RoomTile = class extends Shape{
             z: this.z,
             w: this.width,
             h: this.height
+        };
+    }
+    mouseOver(x, y){
+        this.mouse.x = x;
+        this.mouse.y = y;
+    }
+    sub_render(ctx){
+        ctx.closePath();
+        if(this.stroke){
+            ctx.strokeStyle = "rgba(" + this.stroke.r + ", " + this.stroke.g + ", " + this.stroke.b + ", " + (this.stroke.a / 255) + ")";
+            ctx.stroke();
+        }
+        if(this.color){
+            ctx.fillStyle = "rgba(" + this.color.r + ", " + this.color.g + ", " + this.color.b + ", " + (this.color.a / 255) + ")";
+            ctx.fill();
+
+        }
+    }
+    render(ctx){
+        if(!this.void){
+
+            const lines = [
+            [32, 0],
+            [64, 16],
+            [32, 32],
+            [0, 16]
+        ];
+
+        ctx.beginPath();
+        ctx.moveTo(this.x + lines[0][0], this.y + lines[0][1]);
+
+        for(let i = 0; i < lines.length; i++){
+            let ps = lines[i];
+            ctx.lineTo(this.x + ps[0], this.y + ps[1]);
+        }
+
+            if(ctx.isPointInPath(this.mouse.x, this.mouse.y)){
+                this.stroke = new Color(255, 255, 255);
+                ctx.lineWidth=5;
+                this.hasMouse = true;
+                this.sub_render(ctx, 1);
+            } else{
+                this.stroke = new Color(142, 142, 94);
+                ctx.lineWidth=1;
+                this.hasMouse = false;
+                this.sub_render(ctx, 0);
+            }
+
+
+        }
+    }
+};
+Habbo.prototype._API.prototype.RoomWall = class extends Shape{
+    constructor(tiles, w, h) {
+        super();
+        this.void = false;
+        this.color = new Color(152, 152, 101);
+        this.stroke = new Color(142, 142, 94);
+        this.mouse = new Vector();
+git
+
+        this.points = [];
+
+    }
+    readPixels() {
+        return {
+            x: this.x,
+            y: this.y,
+            z: this.z,
         };
     }
     mouseOver(x, y){
@@ -574,7 +649,7 @@ Habbo.prototype._API.prototype.Room = class extends Shape{
 
         this.dimension = this.buildDimension(this.width, this.height);
 
-        this.furni = [];
+        this.furnis = [];
 
 
         this.mouse = new Vector();
@@ -643,6 +718,144 @@ Habbo.prototype._API.prototype.Room = class extends Shape{
         }
         return ret;
     }
+    furni(t, x, y){
+        let fs = [];
+        if(t==="floor"){
+            for(let i = 0; i < this.furnis.length; i++){
+                let f = this.furnis[i];
+                if(f.pos.x===x && f.pos.y===y){
+                    fs.push(f);
+                }
+            }
+        }
+        if(t==="wall"){
+            for(let i = 0; i < this.furnis.length; i++){
+                let f = this.furnis[i];
+
+                if(f.posType==="wall"){
+                    fs.push(f);
+                }
+            }
+        }
+
+        return fs;
+
+    }
+
+    renderFloor(d, fh){
+        if(!this.tiles){
+            this.tiles = [];
+            for(let x = 0; x < d.length; x++){
+                let a = d[x];
+                for(let y = 0; y < a.length; y++){
+                    let b = a[y];
+                    let tile = new Habbo.API.RoomTile();
+
+
+                    let o = new Vector(b.x, b.y);
+                    o.val = tile;
+
+                    o.truex = x;
+                    o.truey = y;
+
+                    this.tiles.push(o);
+                }
+            }
+        } else{
+            Habbo.API.Client.hover = {tile: false, furni: false};
+
+            for(let i = 0; i < this.tiles.length; i++){
+                let tile = this.tiles[i];
+
+                tile.val.mouseOver(this.mouse.x, this.mouse.y);
+
+
+                if(tile.val.hasMouse){
+                    Habbo.API.Client.hover.tile = tile;
+                }
+
+
+
+                for(let layer = 0; layer < tile.val.layers; layer++){
+                    Habbo.Canvas.add(tile.val, tile.x + this.x, tile.y + this.y - layer);
+                }
+
+            }
+
+
+            if(Habbo.API.Client.hover.tile){
+                let o = Habbo.API.Client.hover.tile;
+                if(o.val.layers > 0){
+                    Habbo.Canvas.add(o.val, o.x + this.x, o.y + this.y);
+                }
+            }
+
+
+            for(let y = this.height - 1; y >=0; y--) {
+                for (let x = 0; x < this.width; x++) {
+                    let fs = this.furni("floor",x, y);
+                    let tile = this.tile(x,y);
+
+                    if(fs.length > 0) {
+                        let stackHeight = 0;
+                        for (let j = 0; j < fs.length; j++) {
+                            let f = fs[j];
+
+                            f.mouseOver(this.mouse.x, this.mouse.y);
+
+                            if (f.hasMouse) {
+                                Habbo.API.Client.hover.furni = f;
+                                console.log(f);
+                            }
+
+                            Habbo.Canvas.add(f, tile.val.x + 1, tile.val.y - f.height + tile.val.height - (stackHeight));
+
+                            stackHeight += f.stackHeight;
+
+                        }
+                    }
+                }
+
+
+            }
+        }
+    }
+    renderWall(d,fh){
+        if(!this.wall){
+
+            let tilewalls;
+
+            this.wall = new Habbo.API.RoomWall(this.tiles);
+
+
+        } else{
+            //Habbo.API.Client.hover = {tile: false, furni: false};
+
+
+
+            for(let i = 0; i < this.tiles.length; i++){
+                let tile = this.tiles[i];
+
+                tile.val.mouseOver(this.mouse.x, this.mouse.y);
+
+
+                if(tile.val.hasMouse){
+                    Habbo.API.Client.hover.tile = tile;
+                }
+
+
+
+                for(let layer = 0; layer < tile.val.layers; layer++){
+                    Habbo.Canvas.add(tile.val, tile.x + this.x, tile.y + this.y - layer);
+                }
+
+            }
+
+
+
+        }
+    }
+
     readPixels() {
         return {
             x: this.x,
@@ -654,89 +867,8 @@ Habbo.prototype._API.prototype.Room = class extends Shape{
     render(ctx){
         const d = this.dimensions();
         const fh = this.floorheight;
-
-            if(!this.tiles){
-                this.tiles = [];
-                for(let x = 0; x < d.length; x++){
-                    let a = d[x];
-                    for(let y = 0; y < a.length; y++){
-                        let b = a[y];
-                        let tile = new Habbo.API.RoomTile();
-
-
-                            let o = new Vector(b.x, b.y);
-                            o.val = tile;
-
-                            o.truex = x;
-                            o.truey = y;
-
-                            this.tiles.push(o);
-                    }
-                }
-            } else{
-                Habbo.API.Client.hover = {tile: false, furni: false};
-
-                for(let i = 0; i < this.tiles.length; i++){
-                    let tile = this.tiles[i];
-
-                    tile.val.mouseOver(this.mouse.x, this.mouse.y);
-
-
-                    if(tile.val.hasMouse){
-                        Habbo.API.Client.hover.tile = tile;
-                    }
-
-
-
-                    for(let layer = 0; layer < tile.val.layers; layer++){
-                        Habbo.Canvas.add(tile.val, tile.x + this.x, tile.y + this.y - layer);
-                    }
-
-                }
-
-
-                if(Habbo.API.Client.hover.tile){
-                    let o = Habbo.API.Client.hover.tile;
-                    if(o.val.layers > 0){
-                        Habbo.Canvas.add(o.val, o.x + this.x, o.y + this.y);
-                    }
-                }
-
-
-
-                for(let y = this.height - 1; y >=0; y--){
-
-                    for(let x = 0; x < this.width; x++){
-                        let tile = this.tile(x, y);
-
-                        if(tile.val.furnis && tile.val.furnis.length && tile.val.layers > 0){
-
-                            let stackHeight = 0;
-
-                            for(let j = 0; j < tile.val.furnis.length; j++){
-                                let f = tile.val.furnis[j];
-
-                                f.mouseOver(this.mouse.x, this.mouse.y);
-
-                                if(f.hasMouse){
-                                    Habbo.API.Client.hover.furni = f;
-                                    console.log(f);
-                                }
-
-                                Habbo.Canvas.add(f, tile.val.x + 1, tile.val.y - f.height + tile.val.height - (stackHeight));
-
-                                stackHeight += f.stackHeight;
-
-                            }
-                        }
-
-                    }
-                }
-
-
-            }
-
-
+        this.renderFloor(d, fh);
+        //this.renderWall(d, fh);
 
     }
 };
